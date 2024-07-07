@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 5000;
 
 // middlewares
 app.use(express.json()); //For APIs receiving JSON data
-app.use(cors(corsOptions)); ///corsOptions
+app.use(cors()); /// corsOptions
 app.use(cookieParser());
 app.use("/", express.static(path.join(__dirname, "public")));
 
