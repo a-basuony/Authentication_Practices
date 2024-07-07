@@ -55,7 +55,7 @@ This middleware is used to parse incoming requests with URL-encoded payloads. It
 - The `extended: true` option allows for rich objects and arrays to be encoded into the URL-encoded format.
 - It can handle data submitted from forms like `application/x-www-form-urlencoded`.
 
-## Example :
+Example :
 
 <form action="/submit-form" method="POST">
   <input type="text" name="username" placeholder="Username">
@@ -120,3 +120,52 @@ Would you like me to explain any specific aspect of these middleware functions i
 ```
 
 ```
+
+### 3. catch all routes that are not supported in your project
+
+- First, make sure all your supported routes are defined before this middleware.
+- Add the catch-all middleware at the end of your route definitions, but before any error-handling middleware.
+  (1)
+
+```javascript
+const express = require("express");
+const path = require("path");
+const app = express();
+
+// Your other middleware and route definitions go here
+// For example:
+// app.use('/api', apiRoutes);
+// app.use('/', mainRoutes);
+
+// Catch-all middleware for unsupported routes
+app.all("*", (req, res) => {
+  res.status(404);
+
+  // Handle different response types
+  // respond with html page
+  if (req.accepts("html")) {
+    res.sendFile(path.join(__dirname, "public", "404.html"));
+    return;
+  }
+
+  // respond with json
+  if (req.accepts("json")) {
+    res.json({ error: "Not found" });
+    return;
+  }
+
+  // default to plain-text
+  res.type("txt").send("Not found");
+});
+
+// Error-handling middleware (if you have one) goes last
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Something went wrong!");
+});
+```
+
+(2) create 404.html file in views folder 
+
+
+

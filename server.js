@@ -14,13 +14,15 @@ const PORT = process.env.PORT || 5000;
 
 // middlewares
 app.use(express.json()); //For APIs receiving JSON data
-app.use(cors()); ///corsOptions
+app.use(cors(corsOptions)); ///corsOptions
 app.use(cookieParser());
 app.use("/", express.static(path.join(__dirname, "public")));
 
 app.use(router);
 
+// Catch-all middleware for unsupported routes
 app.all("*", (req, res, next) => {
+  res.status(404);
   if (req.accepts("html")) {
     res.sendFile(path.join(__dirname, "views", "404.html"));
   } else if (req.accepts("json")) {
@@ -30,7 +32,7 @@ app.all("*", (req, res, next) => {
   }
 });
 
-// Error handling middleware
+// Error-handling middleware (if you have one) goes last
 app.use((err, req, res, next) => {
   console.error(err.stack);
   if (!res.headersSent) {
