@@ -8,6 +8,7 @@ const path = require("path");
 const connectDB = require("./config/dbConn");
 const { corsOptions } = require("./config/corsOptions");
 const router = require("./routes/root");
+const authRouter = require("./routes/authRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -19,6 +20,7 @@ app.use(cookieParser());
 app.use("/", express.static(path.join(__dirname, "public")));
 
 app.use(router);
+app.use("/auth", authRouter);
 
 // Catch-all middleware for unsupported routes
 app.all("*", (req, res, next) => {
